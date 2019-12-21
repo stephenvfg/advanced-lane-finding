@@ -39,7 +39,7 @@ The `calibrate` outputs `objpoints` and `imgpoints` will be used as parameters f
 
 #### 1. Provide an example of a distortion-corrected image.
 
-The distortion-correction method outlined above was condensed into the `undistort` function in the "Supporting Functions" cell. Applying  this function to our lane images produces the following:
+The distortion-correction method outlined above was condensed into the `undistort` function in the **"Supporting Functions"** cell. Applying  this function to our lane images produces the following:
 
 <img src="writeup_assets/undist_lane.png" width="700" />
 
