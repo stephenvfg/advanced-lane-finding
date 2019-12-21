@@ -33,7 +33,7 @@ This function defines an array of 9x6=54 (x,y,z) coordinates. We have an array o
 
 The `calibrate` outputs `objpoints` and `imgpoints` will be used as parameters for `cv2.calibrateCamera()` to calculate the calibration coefficients `mtx` and `dist`. These coefficients are passed into  `cv2.undistort()` along with a test chessboard image to obtain the undistorted chessboard.
 
-<img src="writeup_assets/undist_chess.png" width="500" />
+<img src="writeup_assets/undist_chess.png" width="700" />
 
 ### Pipeline (single images)
 
@@ -41,7 +41,7 @@ The `calibrate` outputs `objpoints` and `imgpoints` will be used as parameters f
 
 The distortion-correction method outlined above was condensed into the `undistort` function in the "Supporting Functions" cell. Applying  this function to our lane images produces the following:
 
-<img src="writeup_assets/undist_lane.png" width="500" />
+<img src="writeup_assets/undist_lane.png" width="700" />
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
@@ -52,7 +52,7 @@ I used three different methods to produce a combined thresholded binary image. T
 
 When these three thresholds are combined we obtain the following result:
 
-<img src="writeup_assets/threshold.png" width="500" />
+<img src="writeup_assets/threshold.png" width="700" />
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
@@ -67,7 +67,7 @@ Top right | (Horizontal midpoint + 53px, 63% down from the top) | (25% from the 
 
 Using these defined points as parameters, I called `cv2.getPerspectiveTransform(src, dst)` to obtain the transformation matrix that I needed. Then I passed my image and the transformation matrix into `cv2.warpPerspective` to get my transformed image.
 
-<img src="writeup_assets/transform.png" width="500" />
+<img src="writeup_assets/transform.png" width="700" />
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
@@ -75,7 +75,7 @@ I used the sliding windows technique to identify where the lane-line pixels are.
 
 The histogram should show two peaks: one for the base of the left lane line and a second peak for the base of the right lane line.
 
-<img src="writeup_assets/peaks.png" width="500" />
+<img src="writeup_assets/peaks.png" width="700" />
 
 After identiying the lane line base x-coordinates, starting from that coordinate I could start to identify the exact pixels composing each lane line. I searched for pixels that fit within a certain boundary of the origin. The boundaries were drawn as rectangles that follow the lane pixels from the bottom to the top of the image.
 
@@ -89,7 +89,7 @@ Before moving into the next rectangle up, I checked if we needed to re-center th
 
 The outcome of iterating through each rectangle and storing the activated pixels each time is a collection of all left and right lane pixel coordinates. Using `np.polyfit()` with the (x, y) pixel coordinates of each lane, I was able to back into a polynomial fit for the f(y) function that defined the lane.
 
-<img src="writeup_assets/rectangles.png" width="500" />
+<img src="writeup_assets/rectangles.png" width="700" />
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
@@ -116,7 +116,7 @@ I compared this value to `x_midpoint_exp`, defined as the expected midpoint of t
 
 The Jupyter notebook cell titled "Draw the Lane Back onto the Original Image" contains the code for this section. I used the inverse transform matrix to untransform my birds-eye view of the lane and map it back to the original lane view. Then I plotted the lane pixels back onto the source image.
 
-<img src="writeup_assets/lane.png" width="500" />
+<img src="writeup_assets/lane.png" width="700" />
 
 ---
 # Example writeup
