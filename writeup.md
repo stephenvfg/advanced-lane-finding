@@ -1,9 +1,9 @@
 # Advanced Lane Finding
 ## Writeup
----
+
+**All referenced source code is from the Jupyter notebook in this repostitory P2.ipynb**
 
 **This project followed these steps:**
-
 * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
 * Apply a distortion correction to raw images.
 * Use color transforms, gradients, etc., to create a thresholded binary image.
@@ -15,22 +15,21 @@
 
 **Link to [Project Rubric](https://review.udacity.com/#!/rubrics/571/view)**
 
-**All referenced source code is from the Jupyter notebook in this repostitory P2.ipynb**
 ---
 
 ### Camera Calibration
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for my camera calibration and distortion correction is in the Jupyter notebook cells titled "Supporting Functions" and "Compute Calibration and Undistort Image". The  `calibrate ` function was created for this purpose.
+The code for my camera calibration and distortion correction is in the Jupyter notebook cells titled "Supporting Functions" and "Compute Calibration and Undistort Image". The  `calibrate` function was created for this purpose.
 
-In  `camera_cal ` there are several images of a 9 by 6 chessboard that we will use to calibrate the camera. I defined the  `calibrate ` function that takes as parameters the  `camera_cal/ ` directory path as well as the 9 by 6 dimensions of the chessboard.
+In  `camera_cal` there are several images of a 9 by 6 chessboard that we will use to calibrate the camera. I defined the  `calibrate` function that takes as parameters the  `camera_cal/` directory path as well as the 9 by 6 dimensions of the chessboard.
 
 ```
 calibrate('camera_cal/', 9, 6)
 ```
 
-This function defines an array of 9x6=54 (x,y,z) coordinates. We have an array of object points which will cycle from (0,0,0) to (8,5,0) representing the coordinates of the chessboard corners in the real world. (z is always 0 because the chessboard is flat.) For each chessboard image we will also use  `cv2.findChessboardCorners ` to find the (x,y,z) coordinates of the same corners. These image points will be paired with the earlier object points.
+This function defines an array of 9x6=54 (x,y,z) coordinates. We have an array of object points which will cycle from (0,0,0) to (8,5,0) representing the coordinates of the chessboard corners in the real world. (z is always 0 because the chessboard is flat.) For each chessboard image we will also use  `cv2.findChessboardCorners` to find the (x,y,z) coordinates of the same corners. These image points will be paired with the earlier object points.
 
 The `calibrate` outputs `objpoints` and `imgpoints` will be used as parameters for `cv2.calibrateCamera()` to calculate the calibration coefficients `mtx` and `dist`. These coefficients are passed into  `cv2.undistort()` along with a test chessboard image to obtain the undistorted chessboard.
 
@@ -44,49 +43,37 @@ The distortion-correction method outlined above was condensed into the `undistor
 
 # Insert undist_lane
 
+#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
+I used three different methods to produce a combined thresholded binary image. The following functions are defined in the "Supporting Functions" cell.
+1. `b_threshold` generates a threshold using B values from the LAB color space to isolate yellow lane lines.
+2. `l_threshold` generates a threshold using L values from the HLS color space to isolate white lane lines.
+3. `sx_threshold` generates a threshold using Sobel X gradient values to isolate edges.
 
+When these three thresholds are combined we obtain the following result:
+
+# Insert threshold
+
+#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
+
+The "Apply Perspective Transform" cell in the Jupyter notebook contains my code for transforming images. The key to transforming images is defining a pairs of source and destination points. The following pairs were used in my code:
+
+Point | Source (trapezoid-ish) | Destination (square)
+------------ | ------------- | -------------
+Top left | (Horizontal midpoint - 50px, 63% down from the top) | (25% from the left, top of the image)
+Bottom left | (16% from the left, bottom of the image) | (25% from the left, bottom of the image)
+Bottom right | (14% from the right, bottom of the image) | (25% from the right, bottom of the image)
+Top right | (Horizontal midpoint + 53px, 63% down from the top) | (25% from the right, top of the image)
+
+Using these defined points as parameters, I called `cv2.getPerspectiveTransform(src, dst)` to obtain the transformation matrix that I needed. Then I passed my image and the transformation matrix into `cv2.warpPerspective` to get my transformed image.
+
+# Insert transform
 
 
 ---
 # Example writeup
 ---
 
-#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
-
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
-
-![alt text][image3]
-
-#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
-
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
-
-```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
-```
-
-This resulted in the following source and destination points:
-
-| Source        | Destination   | 
-|:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
-
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
-
-![alt text][image4]
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
