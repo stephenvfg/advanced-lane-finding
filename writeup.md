@@ -1,7 +1,7 @@
 # Advanced Lane Finding
 ## Writeup
 
-**All referenced source code is from the Jupyter notebook in this repostitory P2.ipynb**
+**All referenced source code is from the Jupyter notebook in this repostitory [P2.ipynb](P2.ipynb)**
 
 **This project followed these steps:**
 * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
